@@ -1,0 +1,5 @@
+.body{
+    background: #7c8ee0;
+    border:2px solid white;
+    flex-direction: column;
+}
