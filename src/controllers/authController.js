@@ -1,7 +1,7 @@
 const userModel = require('../models/user-model');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
-const nodemailer = require("nodemailer");
+const sendEmail = require('../services/mailservice');
 
 
 
@@ -53,56 +53,29 @@ async function register(req,res) {
 
 
 async function forgotPassword(req, res) {
-  try {
-    // const { email } = req.body;
-    // const user = await userModel.findOne({ email });
-    // if (!user) return res.status(400).send('Invalid credentials');
+        const { email } = req.body;
 
-  
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false, 
-      auth: {
-        user: "debashishkarmakar326@gmail.com",
-        pass: "bbdr ekbm reym kunn",
-      },
-    });
+    // Logic to generate a reset token
+//     const resetToken = Math.random().toString(36).substring(2); // Example token
+//     const resetLink = `http://your-frontend-url/reset-password/${resetToken}`;
 
-    
-    const mailOptions = {
-      from: '"Blog website 👻" <debashishkarmakar326@gmail.com>', 
-      to: "raghavsharma6747@gmail.com",
-      subject: "Password Reset Request", 
-      text: "You requested a password reset.",
-      html: 
-      `
-                <!DOCTYPE html>
-                <html>
-                <body>
-                <div style="width:full;height:full;background-color:black;padding:10px;border-radius:10px;border:2px solid white;">
-                    <h1 style="color: #7c8ee0;">Welcome to Our Service!</h1>
-                    <p style="color: #555;">
-                        We're excited to have you join us. Visit the link below to learn more:
-                    </p>
-                    <a href="https://example.com" style="display: inline-block; padding: 10px 20px; color: white; background: #007BFF; text-decoration: none; border-radius: 5px;">Get Started</a>
-                </div>
-                    </body>
-                </html>
-            `,
-      
-    };
+    try {
+        // Call the sendEmail function
+        const emailSent = await sendEmail(
+            email,
+            
+        );
 
-    
-    const info = await transporter.sendMail(mailOptions);
-
-    console.log("Message sent: %s", info.messageId);
-    res.status(200).send("Email sent successfully!");
-
-  } catch (error) {
-    console.error("Error while sending email:", error.message);
-    res.status(500).send("Failed to send email.");
-  }
+        if (emailSent) {
+            return res.status(200).json({ message: "Password reset email sent!" });
+        } else {
+            return res.status(500).json({ error: "Failed to send email." });
+        }
+    } catch (error) {
+        console.error("Error: ", error);
+        return res.status(500).json({ error: "An error occurred." });
+    }
+             
 }
 
 function logout(req,res){

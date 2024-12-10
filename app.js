@@ -30,7 +30,8 @@ app.get('/blog',blogRoute);
 // app.use('/contact')     //contact or send feedback
 
 //authication routes
-app.use('/auth',auth)
+app.use('/auth',auth);
+
 
 
 //private routes
