@@ -5,6 +5,8 @@ const cookieParser=require('cookie-parser');
 const userRouter = require('./src/routes/private/userRoute');
 const homeRoute = require('./src/routes/public/home');
 const blogRoute = require('./src/routes/public/blog');
+const otp= require('./src/utils/otpGeneator');
+require('./src/tasks/clean-otp');
 
 
 
@@ -40,6 +42,7 @@ app.use("/user/profile",userRouter);
 // app.use("/user/blogs");
 // app.use("/user/blogs/:id/edit");
 // app.use("/user/profile/:id/delete");
+app.use("/otp",otp)
 
 
 app.listen(process.env.PORT);

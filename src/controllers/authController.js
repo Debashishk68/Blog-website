@@ -2,7 +2,8 @@ const userModel = require('../models/user-model');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 const sendEmail = require('../services/mailservice');
-
+const otpModel = require('../models/otp-model');
+const otpGeneator = require('../utils/otpGeneator');
 
 
 async function login(req,res) {
@@ -55,27 +56,53 @@ async function register(req,res) {
 async function forgotPassword(req, res) {
         const { email } = req.body;
 
-    // Logic to generate a reset token
-//     const resetToken = Math.random().toString(36).substring(2); // Example token
-//     const resetLink = `http://your-frontend-url/reset-password/${resetToken}`;
-
     try {
+        const user = await userModel.findOne({email});
+         if(user._id){
+          const otp = await otpGeneator(user._id);
+        
+            
         // Call the sendEmail function
         const emailSent = await sendEmail(
-            email,
+            email,otp
             
         );
+        
 
         if (emailSent) {
-            return res.status(200).json({ message: "Password reset email sent!" });
+           return res.status(200).json({ message: "Password reset email sent!" ,otp});
+              }
         } else {
             return res.status(500).json({ error: "Failed to send email." });
         }
+      
+    
     } catch (error) {
         console.error("Error: ", error);
         return res.status(500).json({ error: "An error occurred." });
     }
              
+}
+
+async function otpVerify(req,res){
+        const {otp,userId} = req.body;
+        const verify=await otpModel.findOne({userId,otp});
+        if(verify.expiresAt<=createdAt){
+            if(verify.otp===otp) {
+                res.status(200).send({text:"OTP verified",verified:true});
+            }
+            else{
+                res.status(404).send({text:"incorrect otp",verified:false});
+            }
+
+
+            
+        }
+        else{
+            res.send({text:"OTP expired",verfied:false});
+        }
+        
+
 }
 
 function logout(req,res){
@@ -85,4 +112,4 @@ function logout(req,res){
 }
 
 
-module.exports={login,register,forgotPassword,logout};
+module.exports={login,register,forgotPassword,logout,otpVerify};
