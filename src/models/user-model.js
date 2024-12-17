@@ -22,6 +22,7 @@ const userModel=mongoose.Schema({
         enum:['admin','author','reader'],
         default:'reader'
     },
+ 
    
 });
 
