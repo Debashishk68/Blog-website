@@ -12,6 +12,10 @@ const postModel=mongoose.Schema({
             type:mongoose.Schema.Types.ObjectId,
             ref:'user-model'
         },
+        thumbnail:{
+            type:String
+
+        },
         tags:{
             type:Array
         },

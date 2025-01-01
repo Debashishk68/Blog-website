@@ -13,17 +13,17 @@ async function login(req, res) {
   }
 
   const user = await userModel.findOne({ email });
-  if (!user) return res.status(400).send("invalid creditials");
+  if (!user) return res.status(400).send({error:"invalid creditials",isAuthicated:false});
 
-   const isvalidPassword=bcrypt.compare(password, user.password)
+   const isvalidPassword=await bcrypt.compare(password, user.password);
   
-    if (!isvalidPassword) return res.status(400).send("invalid creditials");
+    if (!isvalidPassword) return res.status(400).send({error:"invalid creditials",isAuthicated:false});
 
     let token = jwt.sign({ email: email }, process.env.SECRET);
-    res.cookie("token", token).status(200).send({message:"Login sucessfully",token});
+ 
+    res.cookie("token", token).status(200).send({message:"Login sucessfully",isAuthicated:true});
 
     
-  
 }
 
 async function register(req, res) {

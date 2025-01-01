@@ -1,16 +1,19 @@
 const express = require('express');
 const auth = require('./src/routes/auth/index');
+const path = require('path')
 const cookieParser=require('cookie-parser');
 const userRouter = require('./src/routes/private/userRoute');
 const homeRoute = require('./src/routes/public/home');
-const blogRoute = require('./src/routes/public/blog');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 require('./src/tasks/clean-otp');
 
 
 
 const app = express();
 require('dotenv').config();
-const bodyParser = require('body-parser');
+
+app.use(express.json())
 
 const {connectMongoDb}= require('./src/config/connection');
 
@@ -18,13 +21,24 @@ const {connectMongoDb}= require('./src/config/connection');
 
 connectMongoDb(process.env.MONGODB);
 
+const corsOptions = {
+    origin: 'http://localhost:5173', 
+    methods: ['GET', 'POST','PUT','DELETE'], 
+    allowedHeaders: ['Content-Type', 'Authorization'], 
+    credentials: true, 
+  };
+  
+  app.use(cors(corsOptions));
+  
+
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(cookieParser());
+
+
 
 //public Routes
 
 app.get('/',homeRoute);
-app.get('/blog',blogRoute);
 // app.use('/blog/:id',)    //post details
 // app.use('/about',)       //info about author
 // app.use('/contact')     //contact or send feedback

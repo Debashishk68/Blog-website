@@ -5,6 +5,9 @@ const userModel=mongoose.Schema({
         type:String,
         require:true
     },
+    profileImg:{
+        type:String
+    },
     age:{
         type:Number,
         require:false
@@ -22,7 +25,7 @@ const userModel=mongoose.Schema({
         enum:['admin','author','reader'],
         default:'reader'
     },
- 
+  
    
 });
 

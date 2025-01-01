@@ -7,7 +7,7 @@ router.post('/login',login);
 router.post('/register',register);
 router.post('/forgot-password',forgotPassword);
 router.post('/otpverify',otpVerify);
-router.post('/changePassword',changePassword)
+router.post('/changePassword',changePassword);
 router.post('/logout',logout);
 
 module.exports= router;
