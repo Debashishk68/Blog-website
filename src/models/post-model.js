@@ -16,6 +16,7 @@ const postModel=mongoose.Schema({
             type:String
 
         },
+        authorName:{type:String},
         tags:{
             type:Array
         },
@@ -28,10 +29,10 @@ const postModel=mongoose.Schema({
         updatedAt:{
             type:Date
         },
-
-        likes:{
-            type:Array
-        },
+        likes: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User', // Reference to the User model
+          }],
         views:{
             type:Number
         }

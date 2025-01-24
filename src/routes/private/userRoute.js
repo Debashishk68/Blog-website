@@ -7,6 +7,11 @@ const router = express.Router();
 
 const multer = require("multer");
 const path = require("path");
+const { likeController } = require("../../controllers/likeController");
+const { commentController } = require("../../controllers/commentController");
+const { showComments } = require("../../controllers/commentController");
+const changeProfilePic = require("../../controllers/userController");
+
 
 const storage = multer.diskStorage({
   destination: (req, res, cb) => {
@@ -33,7 +38,7 @@ router.get("/", isLoggedIn, async (req, res) => {
       .json({
         message: "Sucessfully retrived posts",
         posts: posts,
-        profilemImg:user.profileImg,
+        profileImg:user.profileImg,
         user: user.email,
         name:user.name
       });
@@ -44,6 +49,20 @@ router.get("/", isLoggedIn, async (req, res) => {
 
 router.post("/createpost", isLoggedIn, upload.single('file'), postController.createPost);
 
-router.get("/posts",isLoggedIn,postController.showPosts)
+router.get("/posts",isLoggedIn,postController.showPosts);
+
+router.get("/post/:id",isLoggedIn,postController.findPostById)
+
+router.delete("/delete/:id",isLoggedIn,postController.deletePost)
+
+router.post('/editpost/:id',isLoggedIn, upload.single('file'),postController.editPost);
+ 
+router.post('/likepost/:id',isLoggedIn,likeController);
+
+router.post('/addcomment/:id',isLoggedIn,commentController);
+
+router.post('/showcomments/:id',showComments);
+
+router.post("/changeprofilepic",isLoggedIn,upload.single('file'),changeProfilePic)
 
 module.exports = router;
